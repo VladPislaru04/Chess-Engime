@@ -532,29 +532,100 @@ King::King(string color, int positionX , int positionY, bool moved = false) {
     this -> positionY = positionY ;
 }
 
+vector <Piece*> WhitePieces ;
+vector <Piece*> BlackPieces ;
 bool Check(string,int,int) ;
+
 void King::GetLegalMoves() {
     set < pair < int , int > > LegalMoves = {} ;
     int dx[] = {0,0,-1,-1,-1,1,1,1} ;
     int dy[] = {1,-1,0,1,-1,0,1,-1} ;
-    for (int i = 0 ; i < 8 ; ++i )
-        if (Inside(this -> positionX + dx[i],this -> positionY + dy[i]))
-            if ( !Check(this -> color, this -> positionX + dx[i], this -> positionY + dy[i] ) ) {
-                if (Board[this->positionX + dx[i]][this->positionY + dy[i]] == nullptr)
-                    LegalMoves.insert(make_pair(this->positionX + dx[i], this->positionY + dy[i]));
-                else if (Board[this->positionX + dx[i]][this->positionY + dy[i]]->color !=
-                         Board[this->positionX][this->positionY] -> color )
-                    LegalMoves.insert(make_pair(this->positionX + dx[i], this->positionY + dy[i]));
+    if ( color == "White") {
+        for (int i = 0; i < BlackPieces.size(); ++i) {
+            if ( typeid(*BlackPieces[i]) == typeid(Pawn)) {
+                BlackPieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (BlackPieces[i]->LegalMoves).begin(); it != (BlackPieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(it->first, it->second));
             }
+            if ( typeid(*BlackPieces[i]) == typeid(Knight)) {
+                BlackPieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (BlackPieces[i]->LegalMoves).begin(); it != (BlackPieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(it->first, it->second));
+            }
+            if ( typeid(*BlackPieces[i]) == typeid(Bishop)) {
+                BlackPieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (BlackPieces[i]->LegalMoves).begin(); it != (BlackPieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(it->first, it->second));
+            }
+            if ( typeid(*BlackPieces[i]) == typeid(Rook)){
+                BlackPieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (BlackPieces[i]->LegalMoves).begin(); it != (BlackPieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(it->first, it->second));
+            }
+            if ( typeid(*BlackPieces[i]) == typeid(Queen)) {
+                BlackPieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (BlackPieces[i]->LegalMoves).begin(); it != (BlackPieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(it->first, it->second));
+            }
+        }
+    }
+    if ( color == "Black") {
+        for (int i = 0; i < WhitePieces.size(); ++i) {
+            if ( typeid(*WhitePieces[i]) == typeid(Pawn)) {
+                WhitePieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (WhitePieces[i]->LegalMoves).begin(); it != (WhitePieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(it->first, it->second));
+            }
+            if ( typeid(*WhitePieces[i]) == typeid(Knight)) {
+                WhitePieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (WhitePieces[i]->LegalMoves).begin(); it != (WhitePieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(it->first, it->second));
+            }
+            if ( typeid(*WhitePieces[i]) == typeid(Bishop)) {
+                WhitePieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (WhitePieces[i]->LegalMoves).begin(); it != (WhitePieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(it->first, it->second));
+            }
+            if ( typeid(*WhitePieces[i]) == typeid(Rook)){
+                WhitePieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (WhitePieces[i]->LegalMoves).begin(); it != (WhitePieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(it->first, it->second));
+            }
+            if ( typeid(*WhitePieces[i]) == typeid(Queen)) {
+                WhitePieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (WhitePieces[i]->LegalMoves).begin(); it != (WhitePieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(it->first, it->second));
+            }
+        }
+    }
+    set < pair < int , int > > LegalMovesKing = {} ;
+    for (int i = 0 ; i < 8 ; ++i )
+        if (Inside(this -> positionX + dx[i],this -> positionY + dy[i])) {
+            auto pos = LegalMoves.find(make_pair(this -> positionX + dx[i],this -> positionY + dy[i])) ;
+            if ( pos == LegalMoves.end() ) {
+                if (Board[this->positionX + dx[i]][this->positionY + dy[i]] == nullptr)
+                    LegalMovesKing.insert(make_pair(this->positionX + dx[i], this->positionY + dy[i]));
+                else if (Board[this->positionX + dx[i]][this->positionY + dy[i]]->color !=
+                         Board[this->positionX][this->positionY]->color)
+                    LegalMovesKing.insert(make_pair(this->positionX + dx[i], this->positionY + dy[i]));
+            }
+        }
 
 
-    this -> LegalMoves = LegalMoves ;
+    this -> LegalMoves = LegalMovesKing ;
 
 }
 
-
-vector <Piece*> WhitePieces ;
-vector <Piece*> BlackPieces ;
 
 bool Check ( string color , int dx, int dy ) {
     if ( color == "White" ) {
@@ -786,7 +857,7 @@ float Evaluate() {
 
     ///When a square is attacked by more pieces
     for ( int i = 1 ; i <= 8 ; ++i ) {
-        for (int j = 1; j <= 8; ++j) {
+        for (int j = 1; j <= 8; ++j ) {
             if ( Targets[i][j] > 0 && Board[i][j] != nullptr ) {
                 if ( Board[i][j] -> color == "Black" ) {
                     if (typeid(*Board[i][j]) == typeid(Pawn) )
@@ -818,9 +889,166 @@ float Evaluate() {
         }
 
     }
-    float WhiteFactor = WhiteMaterial * 10 + PositionFactorWhite + MatricealPositionWhite ;
-    float BlackFactor = BlackMaterial * 10 + PoistionFactorBlack + MatricealPositionBlack ;
+    ///King Safety
+    int dxWhite, dyWhite, dxBlack, dyBlack ;
+    float KingSafetyWhite = 0 ;
+    float KingSafetyBlack = 0 ;
+    int dx[] = {0,0,-1,-1,-1,1,1,1} ;
+    int dy[] = {1,-1,0,1,-1,0,1,-1} ;
+    for ( int i = 0 ; i < WhitePieces.size() ; ++i ) {
+        if ( typeid(*WhitePieces[i]) == typeid(King) ) {
+            dxWhite = WhitePieces[i] -> positionX ;
+            dyWhite = WhitePieces[i] -> positionY ;
+        }
+    }
+    for ( int i = 0 ; i < BlackPieces.size() ; ++i ) {
+        if ( typeid(*BlackPieces[i]) == typeid(King) ) {
+            dxBlack = BlackPieces[i] -> positionX ;
+            dyBlack = BlackPieces[i] -> positionY ;
+        }
+    }
+    for ( int i = 0 ; i < 8 ; ++i ) {
+        if (Targets[dxWhite + dx[i]][dyWhite + dy[i]] < 0)
+            KingSafetyWhite = KingSafetyWhite - 10;
+        if (Targets[dxWhite + dx[i]][dyWhite + dy[i]] == 0)
+            KingSafetyWhite = KingSafetyWhite - 3;
+        if (Targets[dxWhite + dx[i]][dyWhite + dy[i]] > 0)
+            KingSafetyWhite = KingSafetyWhite + 1;
+        if (Targets[dxBlack + dx[i]][dyBlack + dy[i]] > 0)
+            KingSafetyBlack = KingSafetyBlack - 10;
+        if (Targets[dxBlack + dx[i]][dyBlack + dy[i]] == 0)
+            KingSafetyBlack = KingSafetyBlack - 3;
+        if (Targets[dxBlack + dx[i]][dyBlack + dy[i]] < 0)
+            KingSafetyBlack = KingSafetyBlack + 1;
+    }
+
+
+    float WhiteFactor = WhiteMaterial * 10 + PositionFactorWhite + MatricealPositionWhite + KingSafetyWhite  ;
+    float BlackFactor = BlackMaterial * 10 + PoistionFactorBlack + MatricealPositionBlack + KingSafetyBlack  ;
     return WhiteFactor - BlackFactor ;
+
+}
+
+float NextMove (string color, int depth, float alpha, float beta) {
+    if ( depth == 0 )
+        return Evaluate() ;
+    float evaluation, minEvaluation = 999999, maxEvaluation = -999999 ;
+    if ( color == "Black" ) {
+        set<pair<pair<int, int>, pair<int, int> > > LegalMoves = {};
+        for (int i = 0; i < BlackPieces.size(); ++i) {
+            if (typeid(*BlackPieces[i]) == typeid(Pawn)) {
+                BlackPieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (BlackPieces[i]->LegalMoves).begin(); it != (BlackPieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(make_pair(BlackPieces[i]->positionX, BlackPieces[i]->positionY),
+                                                make_pair(it->first, it->second)));
+            }
+            if (typeid(*BlackPieces[i]) == typeid(Knight)) {
+                BlackPieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (BlackPieces[i]->LegalMoves).begin(); it != (BlackPieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(make_pair(BlackPieces[i]->positionX, BlackPieces[i]->positionY),
+                                                make_pair(it->first, it->second)));
+            }
+            if (typeid(*BlackPieces[i]) == typeid(Bishop)) {
+                BlackPieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (BlackPieces[i]->LegalMoves).begin(); it != (BlackPieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(make_pair(BlackPieces[i]->positionX, BlackPieces[i]->positionY),
+                                                make_pair(it->first, it->second)));
+            }
+            if (typeid(*BlackPieces[i]) == typeid(Rook)) {
+                BlackPieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (BlackPieces[i]->LegalMoves).begin(); it != (BlackPieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(make_pair(BlackPieces[i]->positionX, BlackPieces[i]->positionY),
+                                                make_pair(it->first, it->second)));
+            }
+            if (typeid(*BlackPieces[i]) == typeid(Queen)) {
+                BlackPieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (BlackPieces[i]->LegalMoves).begin(); it != (BlackPieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(make_pair(BlackPieces[i]->positionX, BlackPieces[i]->positionY),
+                                                make_pair(it->first, it->second)));
+            }
+            set<pair<pair<int, int>, pair<int, int> > >::iterator it;
+            for (it = LegalMoves.begin(); it != LegalMoves.end(); ++it) {
+                Board[(it->second).first][(it->second).second] = Board[(it->first).first][(it->first).second];
+                Board[(it->first).first][(it->first).second] = nullptr;
+                evaluation = NextMove(color, depth - 1, alpha, beta);
+                Board[(it->first).first][(it->first).second] = Board[(it->second).first][(it->second).second];
+                Board[(it->second).first][(it->second).second] = nullptr;
+                if (evaluation < minEvaluation)
+                    minEvaluation = evaluation;
+                if (beta <= evaluation)
+                    beta = evaluation;
+                if (beta <= alpha)
+                    break;
+            }
+            return minEvaluation;
+        }
+    }
+    if (color == "White") {
+        set<pair<pair<int, int>, pair<int, int> > > LegalMoves = {};
+        for (int i = 0; i < WhitePieces.size(); ++i) {
+            if (typeid(*WhitePieces[i]) == typeid(Pawn)) {
+                WhitePieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (WhitePieces[i]->LegalMoves).begin(); it != (WhitePieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(make_pair(WhitePieces[i]->positionX, WhitePieces[i]->positionY),
+                                                make_pair(it->first, it->second)));
+            }
+            if (typeid(*WhitePieces[i]) == typeid(Knight)) {
+                WhitePieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (WhitePieces[i]->LegalMoves).begin(); it != (WhitePieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(make_pair(WhitePieces[i]->positionX, WhitePieces[i]->positionY),
+                                                make_pair(it->first, it->second)));
+            }
+            if (typeid(*WhitePieces[i]) == typeid(Bishop)) {
+                WhitePieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (WhitePieces[i]->LegalMoves).begin(); it != (WhitePieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(make_pair(WhitePieces[i]->positionX, WhitePieces[i]->positionY),
+                                                make_pair(it->first, it->second)));
+            }
+            if (typeid(*WhitePieces[i]) == typeid(Rook)) {
+                WhitePieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (WhitePieces[i]->LegalMoves).begin(); it != (WhitePieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(make_pair(WhitePieces[i]->positionX, WhitePieces[i]->positionY),
+                                                make_pair(it->first, it->second)));
+            }
+            if (typeid(*WhitePieces[i]) == typeid(Queen)) {
+                WhitePieces[i]->GetLegalMoves();
+                set<pair<int, int> >::iterator it;
+                for (it = (WhitePieces[i]->LegalMoves).begin(); it != (WhitePieces[i]->LegalMoves).end(); ++it)
+                    LegalMoves.insert(make_pair(make_pair(WhitePieces[i]->positionX, WhitePieces[i]->positionY),
+                                                make_pair(it->first, it->second)));
+            }
+            set<pair<pair<int, int>, pair<int, int> > >::iterator it;
+            for (it = LegalMoves.begin(); it != LegalMoves.end(); ++it) {
+                Board[(it->second).first][(it->second).second] = Board[(it->first).first][(it->first).second];
+                Board[(it->first).first][(it->first).second] = nullptr;
+                evaluation = NextMove(color, depth - 1, alpha, beta);
+                Board[(it->first).first][(it->first).second] = Board[(it->second).first][(it->second).second];
+                Board[(it->second).first][(it->second).second] = nullptr;
+                if (evaluation > maxEvaluation)
+                    maxEvaluation = evaluation;
+                if (alpha >= evaluation)
+                    alpha = evaluation;
+                if (beta <= alpha)
+                    break;
+            }
+            return maxEvaluation;
+        }
+    }
+    return 1;
+
+}
+
+pair < int , int > Solve(int depth, string color) {
+    pair < int , int >  bestMove ;
 
 }
 
@@ -839,11 +1067,6 @@ void CreateBoard1() {
     WhitePieces.push_back(Board[5][2] = new Pawn("White",5,2) );
     WhitePieces.push_back(Board[7][6] = new Pawn("White",7,6) );
 
-    /*WhitePieces.push_back(Board[2][4] = new Knight("White",1,2) );
-    Board[1][4] -> GetLegalMoves() ;
-    set < pair < int , int > > :: iterator it ;
-    for ( it = (Board[1][4]->LegalMoves).begin() ; it != (Board[1][4]->LegalMoves).end(); ++it )
-        cout << it -> first << " " << it -> second << endl ; */
 
 }
 
